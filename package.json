@@ -1,0 +1,23 @@
+{
+  "name": "stuinformasys",
+  "version": "1.0.0",
+  "description": "学生信息管理系统",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StuInforMaSysTeam/StuInforMaSys.git"
+  },
+  "keywords": [
+    "学生",
+    "增删改查"
+  ],
+  "author": "徐要芳",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StuInforMaSysTeam/StuInforMaSys/issues"
+  },
+  "homepage": "https://github.com/StuInforMaSysTeam/StuInforMaSys#readme"
+}
