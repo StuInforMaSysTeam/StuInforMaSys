@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>添加学生信息</title>
+    <title>修改学生信息</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/addStu.css">
+    <link rel="stylesheet" href="css/editStu.css">
 </head>
 
 <body>
@@ -37,7 +37,7 @@
     </nav>
     <header>
         <div class="container">
-            <h3>添加学生</h3>
+            <h3>修改学生信息</h3>
         </div>
     </header>
 
@@ -59,14 +59,12 @@
                 <label for="age" class="col-sm-2 control-label">年龄：</label>
                 <div class="col-sm-1">
                     <select id="age" class="form-control">
-                        <!-- 值value 	发送到服务器的值。 
-                            selected="selected":规定选项（在首次显示在列表中时）表现为选中状态。-->
                         <option value="16">16</option>
                         <option value="17">17</option>
                         <option value="18">18</option>
                         <option value="19">19</option>
                         <option value="20">20</option>
-                        <option value="21" selected="selected">21</option>
+                        <option value="21">21</option>
                         <option value="22">22</option>
                         <option value="23">23</option>
                         <option value="24">24</option>
@@ -96,18 +94,14 @@
                 <div class="col-sm-offset-2 col-sm-1">
                     <button type="submit" class="form-control btn btn-success">提交</button>
                 </div>
-                <div class="col-sm-1">
-                    <button id="back" type="button" class="form-control btn btn-default">返回</button>
-                </div>
             </div>
         </form>
+
     </div>
-
-
 
     <script src="lib/jquery.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/addStu.js"></script>
+    <script src="js/editStu.js"></script>
 </body>
 
 </html>

@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>学生信息管理系统-首页</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="css/index.css"> -->
     <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -41,16 +42,117 @@
             <h3>学生查询及管理</h3>
         </div>
     </header>
-    
-    <div class="container">
+    <div class="container toolbar">
+        <div class="row">
+            <div class="col-lg-1">
+                <button type="button" class="btn btn-success" id="add">添加学生</button>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <!-- col-md-offset-4 -->
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            id="search">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li class="StuID" name="学号">
+                                <a href="#">学&#x3000;号</a>
+                            </li>
+                            <li class="name" name="姓名">
+                                <a href="#">姓&#x3000;名</a>
+                            </li>
+                            <li class="age" name="年龄">
+                                <a href="#">年&#x3000;龄</a>
+                            </li>
+                            <li class="phone" name="联系方式">
+                                <a href="#">联系方式</a>
+                            </li>
+                            <li class="email" name="邮箱">
+                                <a href="#">邮&#x3000;箱</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li class="all" name="全部">
+                                <a href="#">全&#x3000;部</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <input type="text" class="form-control" placeholder="按全部进行搜索">
+                </div>
+            </div>
+        </div>
 
+        <!-- <button type="button" class="btn btn-warning">
+            <span class="glyphicon glyphicon-search"></span>&nbsp;搜索
+        </button> -->
     </div>
 
+    <!--table-responsive:响应式表格,HTML表格自适应
+        1.table-responsive放在table的上一级
+        2.td里的内容增多才会出现滚动条！-->
+    <div class="container table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr class="active">
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>年龄</th>
+                    <th>联系方式</th>
+                    <th>邮箱</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
+    <!-- 模态框 modal.js -->
+    <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">点击按钮</button> -->
+    <!-- Modal -->
+    <!-- fade:淡入淡出 动画效果 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">删除学生信息</h4>
+                </div>
+                <div class="modal-body">
+                    <p>是否删除此学生的信息？</p>
+                    点击确认将删除，点击取消则退出。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" id="delete" data-dismiss="modal">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script id="student" type="text/html">
+        {{each data item}}
+        <tr class="info">
+            <!-- data-id="" +{{item.id}}+"" -->
+            <td>{{item.StuID}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.age}}</td>
+            <td>{{item.phone}}</td>
+            <td>{{item.email}}</td>
+            <td><span id="edit" class="glyphicon glyphicon-edit"></span></td>
+            <td><span id="trash" type="button" class="glyphicon glyphicon-trash" data-toggle="modal" data-target="#myModal"></span></td>
+        </tr>
+        {{/each}}
+    </script>
 
     <script src="lib/jquery.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/template-web.js"></script>
     <script src="js/index.js"></script>
 </body>
 
