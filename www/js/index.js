@@ -5,7 +5,7 @@ $('.container #add').click(function add() {
 })
 // 监听搜索选项按钮的点击事件
 $('.container ul').on('click', 'li', function search() {
-    console.log(this);
+    // console.log(this);
     // input 定义ID $("#id").attr("placeholder","更改的值");
     $('.toolbar input').attr("placeholder", "按" + $(this).attr('name') + "进行搜索");
     // $('.toolbar input').val() == "";
@@ -22,7 +22,7 @@ $.get('/getStu', function (res) {
     // 监听input事件
     $('.toolbar input').on('input', function (value) {
         var value = $(this).val();
-        console.log(value);
+        // console.log(value);
         // 添加过滤器  找出满足要求的选项
         const searchArr = res.filter((item, index, arr) => {
             if ($('.toolbar input').attr('placeholder') == "按学号进行搜索") {
@@ -39,17 +39,19 @@ $.get('/getStu', function (res) {
                 return item.StuID.includes(value) || item.name.includes(value) || item.age.includes(value) || item.phone.includes(value) || item.email.includes(value);
             }
         })
-        console.log(searchArr);
+        // console.log(searchArr);
 
         // 把新的数据和模板结合生成html内容
         var searchHtml = template('student', { data: searchArr });
         // 清空学生信息页面 只展示符合要求的学生信息页面
         $('.container tbody').html(searchHtml);
 
+        // 搜索后修改
+        editStu();
+
+        
+
     })
-
-
-
 
     // 监听编辑的点击事件
     editStu();
@@ -139,6 +141,6 @@ function editStu() {
         console.log(id);
         location.href = "editStu.html?id=" + id;
         // console.log(location.href);
-        
+
     })
 }

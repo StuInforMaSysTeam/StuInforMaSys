@@ -149,17 +149,17 @@ function updateHandle(req, res, id) {
                 if ((updateID != studentsArr[i].StuID) || (updateID == id)) {
                     if (id == studentsArr[i].StuID) {
                         studentsArr.splice(i, 1, updateObj);
-                        // console.log(studentsArr);
-                        fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
-                            if (err) return errHandle(err, res);
-                            res.end(JSON.stringify({ success: 1, message: '修改信息成功' }));
-                        })
                     }
                 } else {
                     res.end(JSON.stringify({ success: 0, message: '该学号已存在，请重新修改' }));
                     return;
                 }
             }
+            fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
+                if (err) return errHandle(err, res);
+                res.end(JSON.stringify({ success: 1, message: '修改信息成功' }));
+            })
+
         })
     })
 }
