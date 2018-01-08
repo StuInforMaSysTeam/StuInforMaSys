@@ -135,9 +135,10 @@ $(show(1))
 function editStu() {
     // 监听编辑的点击事件
     $('tbody>tr').on('click', 'td:eq(5)', function () {
-        var index = $(this).parent().index();
-        // console.log(index);
-        location.href = "editStu.html?index=" + index;
+        var id = $($(this).parent().children()[0]).html();
+        console.log(id);
+        location.href = "editStu.html?id=" + id;
         // console.log(location.href);
+        
     })
 }

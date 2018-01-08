@@ -16,15 +16,18 @@ server.on('request', (req, res) => {
     // const regex = /(\.js|\.html|\.css|\/$)|(fonts+)/;
     const regex = /(\.js|\.html|\.css|\/$)|(.html+)|(fonts+)/;
     const reqUrl = req.url.split('?')[0];
-    const index = req.url.split('index=')[1];
+    const id = req.url.split('id=')[1];
     // console.log(url);
     // console.log(req.url);
-    // console.log(index);
+    // console.log(id);
 
     if (regex.test(req.url)) {
         const r = fs.createReadStream('www' + (req.url == '/' ? '/index.html' : reqUrl));
         r.pipe(res);
     }
+    // console.log(res);
+
+    // console
 
     if (reqUrl === '/addStu') {
         // 处理添加学生页面的请求
@@ -38,12 +41,12 @@ server.on('request', (req, res) => {
 
     // 处理修改学生页面的初始信息的请求
     if (reqUrl === '/editStu') {
-        editStuHandle(req, res, index);
+        editStuHandle(req, res, id);
     }
 
     // 处理修改后提交的请求
     if (reqUrl === '/update') {
-        updateHandle(req, res, index);
+        updateHandle(req, res, id);
     }
 
     // 处理确认删除的请求
@@ -51,7 +54,7 @@ server.on('request', (req, res) => {
         deleteHandle(req, res, index);
     }
 
-    
+
 })
 
 // 4、监听端口
@@ -76,11 +79,19 @@ function addStuHandle(req, res) {
         // console.log(total);
         // 解析接收到的数据 变成一个对象 并存入students.json文件中
         const studentObj = querystring.parse(total);
-        // console.log(studentObj);
+        const id = studentObj.StuID;
+        // console.log(id);
         fs.readFile('students.json', (err, data) => {
+            if (err) return errHandle(err, res);
             const studentsArr = JSON.parse(data);
-            studentsArr.unshift(studentObj);
-            // studentsArr.push(studentObj);
+            for (let i = 0; i < studentsArr.length; i++) {
+                if (id == studentsArr[i].StuID) {
+                    res.end(JSON.stringify({ success: 0, message: '该学号已存在，请搜索该学号进行修改' }));
+                    return;
+                }
+            }
+            // studentsArr.unshift(studentObj);
+            studentsArr.push(studentObj);
             // console.log(studentsArr);
             fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
                 if (err) return errHandle(err, res);
@@ -98,19 +109,24 @@ function getStuHandle(req, res) {
 }
 
 // 处理修改学生页面的初始信息
-function editStuHandle(req, res, index) {
+function editStuHandle(req, res, id) {
     res.setHeader('Content-Type', 'application/json');
     fs.readFile('students.json', (err, data) => {
         // console.log(data);
-        // console.log(index);
-        const studentObj = JSON.parse(data)[index];
-        // console.log(studentObj);
-        res.end(JSON.stringify(studentObj))
+        // console.log(id);
+        var dataArr = JSON.parse(data);
+        // console.log(dataArr[0].StuID);
+        for (let i = 0; i < dataArr.length; i++) {
+            if (dataArr[i].StuID == id) {
+                const studentObj = dataArr[i];
+                res.end(JSON.stringify(studentObj))
+            }
+        }
     })
 }
 
 // 处理修改后提交的请求
-function updateHandle(req, res, index) {
+function updateHandle(req, res, id) {
     res.setHeader('Content-Type', 'application/json');
     // console.log(index);
     // 从请求中获取数据
@@ -122,18 +138,33 @@ function updateHandle(req, res, index) {
         // 解析接收到的数据
         var updateObj = querystring.parse(total);
         // console.log(updateObj);
+        var updateID = updateObj.StuID;
+
         // 获取students.json文件的数据
         fs.readFile('students.json', (err, data) => {
             const studentsArr = JSON.parse(data);
-            studentsArr.splice(index, 1, updateObj);
-            // console.log(studentsArr);
-            fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
-                if (err) return errHandle(err, res);
-                res.end(JSON.stringify({ success: 1, message: '修改信息成功' }));
-            })
+            // console.log(updateID);
+
+            for (let i = 0; i < studentsArr.length; i++) {
+                if ((updateID != studentsArr[i].StuID) || (updateID == id)) {
+                    if (id == studentsArr[i].StuID) {
+                        studentsArr.splice(i, 1, updateObj);
+                        // console.log(studentsArr);
+                        fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
+                            if (err) return errHandle(err, res);
+                            res.end(JSON.stringify({ success: 1, message: '修改信息成功' }));
+                        })
+                    }
+                } else {
+                    res.end(JSON.stringify({ success: 0, message: '该学号已存在，请重新修改' }));
+                    return;
+                }
+            }
         })
     })
 }
+
+
 
 // 处理确认删除的请求
 function deleteHandle(req, res, index) {
@@ -149,3 +180,124 @@ function deleteHandle(req, res, index) {
         })
     })
 }
+
+
+// 语句中的object_id( ) 是系统函数，作用是返回对应表名在数据库中的ID
+
+
+/**
+ * 
+ * 
+ *  {
+        "StuID": "11111",
+        "name": "",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "2222",
+        "name": "",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "4444",
+        "name": "",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "333",
+        "name": "",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "208140",
+        "name": "雯雯",
+        "age": "21",
+        "phone": "15851831235",
+        "email": "158962@qq.com",
+        "intro": "我是人安稳"
+    },
+    {
+        "StuID": "208140",
+        "name": "淳儿",
+        "age": "20",
+        "phone": "15851830320",
+        "email": "1240409716@qq.com",
+        "intro": "小鹿迷"
+    },
+    {
+        "StuID": "208140",
+        "name": "后羿",
+        "age": "24",
+        "phone": "15137306985",
+        "email": "151@163.com",
+        "intro": "不日"
+    },
+    {
+        "StuID": "208140",
+        "name": "妲己",
+        "age": "21",
+        "phone": "15895952185",
+        "email": "110@qq.com",
+        "intro": "哎呀"
+    },
+    {
+        "StuID": "208140",
+        "name": "曹宇",
+        "age": "20",
+        "phone": "15251321694",
+        "email": "1317244865@qq.com",
+        "intro": "我是王者"
+    },
+    {
+        "StuID": "208140",
+        "name": "嘿嘿",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "",
+        "name": "范冰冰",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": "我是李晨的女朋友"
+    },
+    {
+        "StuID": "21058",
+        "name": "刘诗诗",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "208140",
+        "name": "杨幂",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    },
+    {
+        "StuID": "返回",
+        "name": "返回",
+        "age": "21",
+        "phone": "",
+        "email": "",
+        "intro": ""
+    }
+ */

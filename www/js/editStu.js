@@ -1,9 +1,9 @@
 
-var index = location.search.split('?index=')[1];
+var id = location.search.split('?id=')[1];
 // console.log(index);
 
 // 发送请求获取当前编辑页面的数据
-$.get('/editStu?index=' + index, function (res) {
+$.get('/editStu?id=' + id, function (res) {
     // console.log(res);
     $('#StuID').val(res.StuID);
     $('#name').val(res.name);
@@ -28,7 +28,7 @@ $('form').submit(function (event) {
     // console.log(updateData);
 
     // console.log(index);
-    $.post('/update?index=' + index, updateData, function (res) {
+    $.post('/update?id=' + id, updateData, function (res) {
         if (res.success == 0) {
             alert(res.message);
         } else {

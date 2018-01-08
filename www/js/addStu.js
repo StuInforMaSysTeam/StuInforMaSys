@@ -18,6 +18,8 @@ $('form').submit(function (event) {
 
     // 向服务端发送post请求
     $.post('/addStu', data, function (res) {
+
+        
         // console.log('----');
         if (res.success == 0) {
             alert(res.message);
