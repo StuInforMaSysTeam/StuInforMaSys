@@ -26,7 +26,6 @@ $('form').submit(function (event) {
     var intro = $(this).find('#intro').val();
     var updateData = { StuID, name, age, phone, email, intro };
     // console.log(updateData);
-
     // console.log(index);
     $.post('/update?id=' + id, updateData, function (res) {
         if (res.success == 0) {

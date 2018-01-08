@@ -109,6 +109,8 @@
         </table>
     </div>
 
+    <div class="container text-center" id="pages"></div>
+
     <!-- 模态框 modal.js -->
     <!-- Button trigger modal -->
     <!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">点击按钮</button> -->
@@ -144,10 +146,30 @@
             <td>{{item.age}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.email}}</td>
-            <td><span id="edit" class="glyphicon glyphicon-edit"></span></td>
-            <td><span id="trash" type="button" class="glyphicon glyphicon-trash" data-toggle="modal" data-target="#myModal"></span></td>
+            <td id="edit"><span class="glyphicon glyphicon-edit"></span></td>
+            <td id="trash"><span type="button" class="glyphicon glyphicon-trash" data-toggle="modal" data-target="#myModal"></span></td>
         </tr>
         {{/each}}
+    </script>
+
+    <script id="pagination" type="text/html">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="{{curPage==1?'disabled':''}}" onclick="getStu({{curPage}}-1)" id="previous">
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {{each pages page}}
+                <li class="{{page==curPage?'active':''}}" onclick="getStu({{page}})"><a href="#">{{page}}</a></li>
+                {{/each}}
+                <li class="{{curPage==totalPage?'disabled':''}}" onclick="getStu({{curPage}}+1)">
+                    <a href="#" aria-label="Next" id="next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </script>
 
     <script src="lib/jquery.js"></script>

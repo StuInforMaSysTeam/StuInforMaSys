@@ -1,8 +1,11 @@
 
+// 先监听事件,然后再发送请求、获取数据、展示页面
+
 // 监听添加学生按钮的点击事件
 $('.container #add').click(function add() {
     location.href = 'addStu.html';
 })
+
 // 监听搜索选项按钮的点击事件
 $('.container ul').on('click', 'li', function search() {
     // console.log(this);
@@ -11,9 +14,10 @@ $('.container ul').on('click', 'li', function search() {
     // $('.toolbar input').val() == "";
 })
 
+
 // 向服务端发送请求,添加学生信息到首页
 $.get('/getStu', function (res) {
-    console.log(res);
+    // console.log(res);
     // console.log({ data: res });
     var html = template('student', { data: res });
     $('.container tbody').append(html);
@@ -44,67 +48,88 @@ $.get('/getStu', function (res) {
         // 清空学生信息页面 只展示符合要求的学生信息页面
         $('.container tbody').html(searchHtml);
 
-        // 搜索后修改
-        editStu();
-        // 删除
-        deleteStu();
+        // // 搜索后修改
+        // editStu();
+        // // 删除
+        // deleteStu();
     })
-
-    // 监听编辑的点击事件
-    editStu();
-    // 监听确认删除的点击事件
-    deleteStu();
 })
 
+/*********************获取分页页面***********************/
+// 定义当前页码curPage  每页显示数目perPage
+var curPage = 1;
+var perPage = 3;
+getStu(1);
+function getStu(curPage) {
+    $.get('/getPage?page=' + curPage + '&limit=' + perPage, function Pagination(res) {
+        // console.log(res.students);
+        var html = template('student', { data: res.students });
+        $('.container tbody').html(html);
+        let pages = [];
+        for (let i = 1; i <= res.totalPage; i++) {
+            pages.push(i);
+        }
+        // console.log({ pages: pages });
+        var pageHtml = template('pagination', { totalPage: res.totalPage, curPage: res.curPage, pages: pages });
+        $('#pages').html(pageHtml);
+        // console.log(pageHtml);
+        // // 监听编辑的点击事件
+        // editStu();
+        // // 监听确认删除的点击事件
+        // deleteStu();
+        if (curPage == 1) $('#previous').css('display', 'none');
+        if (curPage == res.totalPage) $('#next').css('display', 'none');
+    })
+}
+
+/************************************************/
 // 编辑学生信息
-function editStu() {
-    // 监听编辑的点击事件
-    $('tbody>tr').on('click', 'td:eq(5)', function () {
-        var id = $($(this).parent().children()[0]).html();
-        console.log(id);
-        location.href = "editStu.html?id=" + id;
-        // console.log(location.href);
+$('tbody').on('click', '#edit', function () {
+    // console.log(this);
+    var id = $($(this).parent().children()[0]).html();
+    // console.log(id);
+    location.href = "editStu.html?id=" + id;
+    getStu(curPage);
+})
 
+/*************************************************/
+// 删除学生信息 trash
+var removeStu;
+var id;
+// click不要嵌套写,会给内部click造成绑定多次事件  有可能会使json文件混乱
+// 如果内部click用到了外面点击事件的值则定义一个全局变量,click里面赋值;
+$('tbody').on('click', '#trash', function () {
+    console.log(this);
+    id = $($(this).parent().children()[0]).html();
+    removeStu = $(this).parent();
+    // $('#deleteModal .modal-body').text('点击确定将删除'+name+'同学的基本信息')
+})
+$('.modal').on('click', '#delete', function () {
+    // console.log(index);
+    $.get('/delete?id=' + id, function (res) {
+        if (res.success == 0) {
+            alert(res.message);
+        } else {
+            alert('删除成功');
+            // 从table中删除一行
+            $(removeStu).remove();
+            // 重新加载当页
+            // location.reload();
+            getStu(curPage);
+        }
     })
-}
+})
+/****************************************************/
 
-// 删除学生信息
-function deleteStu() {
-    $('tbody>tr').on('click', 'td:eq(6)', function () {
-        console.log(this);
-        var id = $($(this).parent().children()[0]).html();
-        console.log(id);
 
-        $('.modal').on('click', '#delete', function () {
-            // console.log(index);
-            $.get('/delete?id=' + id, function (res) {
-                if (res.success == 0) {
-                    alert(res.message);
-                } else {
-                    alert('删除成功');
-                    // 重新加载当页
-                    location.reload();
-                    // location.href = 'index.html';
-                }
-            })
-        })
-    })
-}
+
+
 
 
 /**
  * 
- * $('#students').delegate('td:last-child span','click',function(){
-    var id = $(this).data('id')
-    var name = $(this).data('name')
-    $('#deleteModal .modal-body').text('点击确定将删除'+name)
-    $('#deleteModal').modal('show')
-    $('#deleteModal .modal-footer button:first').click(function(){
-        $.get('/remove/'+ id,
-
-    })
-})
-
+  
+ 
 //获取数据 
 //获取搜索的结果，也是用这个方法，搜索的条件是点击搜索按钮，弹出表单上填充的数据
 function show(page){
