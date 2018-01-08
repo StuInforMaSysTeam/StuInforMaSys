@@ -13,7 +13,6 @@ $('.container ul').on('click', 'li', function search() {
 
 // 向服务端发送请求,添加学生信息到首页
 $.get('/getStu', function (res) {
-
     console.log(res);
     // console.log({ data: res });
     var html = template('student', { data: res });
@@ -40,7 +39,6 @@ $.get('/getStu', function (res) {
             }
         })
         // console.log(searchArr);
-
         // 把新的数据和模板结合生成html内容
         var searchHtml = template('student', { data: searchArr });
         // 清空学生信息页面 只展示符合要求的学生信息页面
@@ -48,22 +46,38 @@ $.get('/getStu', function (res) {
 
         // 搜索后修改
         editStu();
-
-        
-
+        // 删除
+        deleteStu();
     })
 
     // 监听编辑的点击事件
     editStu();
-
     // 监听确认删除的点击事件
+    deleteStu();
+})
+
+// 编辑学生信息
+function editStu() {
+    // 监听编辑的点击事件
+    $('tbody>tr').on('click', 'td:eq(5)', function () {
+        var id = $($(this).parent().children()[0]).html();
+        console.log(id);
+        location.href = "editStu.html?id=" + id;
+        // console.log(location.href);
+
+    })
+}
+
+// 删除学生信息
+function deleteStu() {
     $('tbody>tr').on('click', 'td:eq(6)', function () {
-        // console.log(this);
-        var index = $(this).parent().index();
+        console.log(this);
+        var id = $($(this).parent().children()[0]).html();
+        console.log(id);
 
         $('.modal').on('click', '#delete', function () {
             // console.log(index);
-            $.get('/delete?index=' + index, function (res) {
+            $.get('/delete?id=' + id, function (res) {
                 if (res.success == 0) {
                     alert(res.message);
                 } else {
@@ -75,8 +89,8 @@ $.get('/getStu', function (res) {
             })
         })
     })
+}
 
-})
 
 /**
  * 
@@ -131,16 +145,3 @@ $(show(1))
 // // para2:end; 【start,end]
 // const subArr = arr.slice(1, 3);
 // console.log(subArr);
-
-
-// 编辑学生信息
-function editStu() {
-    // 监听编辑的点击事件
-    $('tbody>tr').on('click', 'td:eq(5)', function () {
-        var id = $($(this).parent().children()[0]).html();
-        console.log(id);
-        location.href = "editStu.html?id=" + id;
-        // console.log(location.href);
-
-    })
-}

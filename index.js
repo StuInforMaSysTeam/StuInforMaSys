@@ -51,7 +51,7 @@ server.on('request', (req, res) => {
 
     // 处理确认删除的请求
     if (reqUrl === '/delete') {
-        deleteHandle(req, res, index);
+        deleteHandle(req, res, id);
     }
 
 
@@ -139,13 +139,13 @@ function updateHandle(req, res, id) {
         var updateObj = querystring.parse(total);
         // console.log(updateObj);
         var updateID = updateObj.StuID;
-
         // 获取students.json文件的数据
         fs.readFile('students.json', (err, data) => {
             const studentsArr = JSON.parse(data);
             // console.log(updateID);
-
+            // 遍历数组
             for (let i = 0; i < studentsArr.length; i++) {
+                // 如果新学号与已有学生学号不同或者没有修改 就找点击学生的id 否则改学号存在
                 if ((updateID != studentsArr[i].StuID) || (updateID == id)) {
                     if (id == studentsArr[i].StuID) {
                         studentsArr.splice(i, 1, updateObj);
@@ -155,32 +155,41 @@ function updateHandle(req, res, id) {
                     return;
                 }
             }
+            // 遍历完数组之后将修改过的学生信息写入json文件中
             fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
                 if (err) return errHandle(err, res);
                 res.end(JSON.stringify({ success: 1, message: '修改信息成功' }));
             })
-
         })
     })
 }
 
-
-
 // 处理确认删除的请求
-function deleteHandle(req, res, index) {
+function deleteHandle(req, res, id) {
     res.setHeader('Content-Type', 'application/json');
     // console.log(index);
     fs.readFile('students.json', (err, data) => {
         if (err) return errHandle(err, res);
         const studentsArr = JSON.parse(data);
-        studentsArr.splice(index, 1);
+
+        console.log(id);
+
+        // 遍历json文件 找到点击学生信息的索引并删除
+        for (let i = 0; i < studentsArr.length; i++) {
+            if (studentsArr[i].StuID == id) {
+                studentsArr.splice(i, 1);
+            }
+        }
+
+        console.log(studentsArr);
+
+        // 把新数组写入json文件并给出响应
         fs.writeFile('students.json', JSON.stringify(studentsArr), (err) => {
             if (err) return errHandle(err, res);
             res.end(JSON.stringify({ success: 1, message: '删除成功' }))
         })
     })
 }
-
 
 // 语句中的object_id( ) 是系统函数，作用是返回对应表名在数据库中的ID
 
